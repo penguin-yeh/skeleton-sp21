@@ -130,13 +130,156 @@ public class Model extends Observable {
      * value, then the leading two tiles in the direction of motion merge,
      * and the trailing tile does not.
      */
+
+    public int getUpPos(int col, int row) {
+        for (int k = row + 1; k < board.size(); k++) {
+            Tile temp = board.tile(col, k);
+            if (temp != null) {
+                return k;
+            }
+        }
+        return -1;
+    }
+
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
 
-        // TODO: Modify this.board (and perhaps this.score) to account
+        // TODO: Modify this.board (and perhaps this.score) to account -> finished
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
+
+        int[][] changeArray = new int[5][5];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                changeArray[i][j] = 0;
+            }
+        }
+
+        //UP(side.NORTH)
+        if (side == Side.NORTH) {
+            for (int i = 3; i >= 0; i--) { //for rows
+                for (int j = 0; j < board.size(); j++) { //for colums
+                    Tile t = board.tile(j, i);
+                    if (t != null) {
+                        boolean empty = true;
+                        int upPos = 0;
+                        upPos = getUpPos(j, i);
+                        if (upPos == -1) {
+                            if (i != 3) {
+                                board.move(j, 3, t);
+                                changed = true;
+                            }
+                        } else {
+                            if (t.value() == board.tile(j, upPos).value() && changeArray[j][upPos] != 1) {
+                                board.move(j, upPos, t);
+                                changeArray[j][upPos] = 1;
+                                changed = true;
+                                score += t.value() * 2;
+                            } else {
+                                board.move(j, upPos - 1, t);
+                                changed = true;
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (side == Side.WEST) {
+            board.setViewingPerspective(side);
+
+            for (int i = 3; i >= 0; i--) { //for rows
+                for (int j = 0; j < board.size(); j++) { //for colums
+                    Tile t = board.tile(j, i);
+                    if (t != null) {
+                        boolean empty = true;
+                        int upPos = 0;
+                        upPos = getUpPos(j, i);
+                        if (upPos == -1) {
+                            if (i != 3) {
+                                board.move(j, 3, t);
+                                changed = true;
+                            }
+                        } else {
+                            if (t.value() == board.tile(j, upPos).value() && changeArray[j][upPos] != 1) {
+                                board.move(j, upPos, t);
+                                changeArray[j][upPos] = 1;
+                                changed = true;
+                                score += t.value() * 2;
+                            } else {
+                                board.move(j, upPos - 1, t);
+                                changed = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            board.setViewingPerspective(Side.NORTH);
+        } else if (side == Side.EAST) {
+            board.setViewingPerspective(side);
+
+            for (int i = 3; i >= 0; i--) { //for rows
+                for (int j = 0; j < board.size(); j++) { //for colums
+                    Tile t = board.tile(j, i);
+                    if (t != null) {
+                        boolean empty = true;
+                        int upPos = 0;
+                        upPos = getUpPos(j, i);
+                        if (upPos == -1) {
+                            if (i != 3) {
+                                board.move(j, 3, t);
+                                changed = true;
+                            }
+                        } else {
+                            if (t.value() == board.tile(j, upPos).value() && changeArray[j][upPos] != 1) {
+                                board.move(j, upPos, t);
+                                changeArray[j][upPos] = 1;
+                                changed = true;
+                                score += t.value() * 2;
+                            } else {
+                                board.move(j, upPos - 1, t);
+                                changed = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            board.setViewingPerspective(Side.NORTH);
+        } else if (side == Side.SOUTH) {
+            board.setViewingPerspective(side);
+
+            for (int i = 3; i >= 0; i--) { //for rows
+                for (int j = 0; j < board.size(); j++) { //for colums
+                    Tile t = board.tile(j, i);
+                    if (t != null) {
+                        boolean empty = true;
+                        int upPos = 0;
+                        upPos = getUpPos(j, i);
+                        if (upPos == -1) {
+                            if (i != 3) {
+                                board.move(j, 3, t);
+                                changed = true;
+                            }
+                        } else {
+                            if (t.value() == board.tile(j, upPos).value() && changeArray[j][upPos] != 1) {
+                                board.move(j, upPos, t);
+                                changeArray[j][upPos] = 1;
+                                changed = true;
+                                score += t.value() * 2;
+                            } else {
+                                board.move(j, upPos - 1, t);
+                                changed = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            board.setViewingPerspective(Side.NORTH);
+        }
+
+        System.out.println("Penguin");
 
         checkGameOver();
         if (changed) {
@@ -205,7 +348,7 @@ public class Model extends Observable {
      * 2. There are two adjacent tiles with the same value.
      */
     public static boolean atLeastOneMoveExists(Board b) {
-        // TODO: Fill in this function.
+        // TODO: Fill in this function. -> finished
         if (emptySpaceExists(b)) {
             return true;
         }
@@ -220,14 +363,14 @@ public class Model extends Observable {
                 } else {
                     copy[i + 1][j + 1] = 0;
                 }
-                System.out.print(copy[i+1][j+1] + "(" + i + "," + j + ") ");
+                System.out.print(copy[i + 1][j + 1] + "(" + i + "," + j + ") ");
             }
             System.out.println();
         }
 
-        for (int i = 1; i < copySize-1; i++) {
-            for (int j = 1; j < copySize-1; j++){
-                if(copy[i][j] == copy[i+1][j] || copy[i][j] == copy[i-1][j] || copy[i][j] == copy[i][j+1] || copy[i][j] == copy[i][j-1]){
+        for (int i = 1; i < copySize - 1; i++) {
+            for (int j = 1; j < copySize - 1; j++) {
+                if (copy[i][j] == copy[i + 1][j] || copy[i][j] == copy[i - 1][j] || copy[i][j] == copy[i][j + 1] || copy[i][j] == copy[i][j - 1]) {
                     return true;
                 }
             }
